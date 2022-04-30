@@ -1,15 +1,27 @@
 const http = require('http');
 const url = require('url');
+const fs = require("fs");
 
-const myURL = new URL('./home.hmtl');
+// const myURL = new URL('./home.hmtl');
 const listaEstados = require('./estados.json');
 
 const app = http.createServer((req, res)=>{
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Content-type', 'application/json')
-    res.write(JSON.stringify(listaEstados));
+        const route = url.parse(req.url);
 
-    res.end();
+        switch(route.pathname){
+            case "/contato":
+                res.end("Pagina contato");
+                break;
+            case '/estados':
+                res.setHeader("Content-Type", "text/html");
+                res.write(JSON.stringify(listaEstados));
+                break;
+            default:
+                const page =fs.readFilrSync("home.html");
+                res.write(page);
+                break;
+        }
+  return res.end();
 })
 
-app.listen(8000, ()=> console.log(`Servidor iniciado em http://localhost:8000/${myURL}`));
+app.listen(8000, ()=> console.log('Servidor iniciado em http://localhost:8000/'));
